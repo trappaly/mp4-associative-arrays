@@ -69,7 +69,7 @@ public class AssociativeArray<K, V> {
     } catch (NullKeyException e) {
     } // catch
     // Returns cloned array
-    return arr; 
+    return arr;
   } // clone()
 
   /**
@@ -94,7 +94,7 @@ public class AssociativeArray<K, V> {
       } // else
     } // for
     // Returns the str inside of { }
-    return "{" + str + "}";
+    return "{ " + str + " }";
   } // toString()
 
   // +----------------+----------------------------------------------
@@ -119,38 +119,28 @@ public class AssociativeArray<K, V> {
    * get(key) will return value.
    */
 
-
-   // need null key exception and key not found exception 
   public void set(K key, V value) throws NullKeyException {
-    // If key is equal to null, throw NullKeyException
     try {
-    if (key == null) {
-      throw new NullKeyException();
-    } // if 
-      // If the key exists, set the index of the pairs of the value equal to the new
-      // value
-      System.out.println ("key");
-      if (hasKey(key)) {
-        System.out.println ("after if:");
+      // If key is equal to null, throw NullKeyException
+      if (key == null) {
+        throw new NullKeyException();
+      } // if
+        // If the key exists, set the index of the pairs of the value equal to the new value
+      if ((pairs[find(key)].value) != value) {
         pairs[find(key)].value = value;
       } // if
+    } catch (KeyNotFoundException e) {
+      // If the array is full, expand the array and add a new KVPair
+      if (this.full()) {
+        this.expand();
+        pairs[this.size++] = new KVPair<K, V>(key, value);
+      } // if
+      // Otherwise create a new KVPair
       else {
-        throw new KeyNotFoundException();
+        pairs[this.size++] = new KVPair<K, V>(key, value);
       } // else
-    // If the array is full, expand the array
-    if (this.full()) {
-      this.expand();
-    } // if
-    // Increments the size of the array of pairs and creates a new KVPair at that
-    // array
-    pairs[size++] = new KVPair<K, V>(key, value);
-  } catch (NullKeyException e){
-
-  } // catch 
-  catch (KeyNotFoundException e){
-    
-  } // catch 
-  } // set(K, V)
+    } // catch
+  } // set (K, V)
 
   /**
    * Get the value associated with key.
@@ -159,38 +149,25 @@ public class AssociativeArray<K, V> {
    *                              when the key is null or does not
    *                              appear in the associative array.
    */
-
-
-   // this is right because rebelskey helped 
   public V get(K key) throws KeyNotFoundException {
-      int i = find(key);
-      return pairs[i].value;
-    // If the key doesn't exist, return null
+    return pairs[find(key)].value;
   } // get(K)
 
   /**
    * Determine if key appears in the associative array. Should
    * return false for the null key.
    */
-
-
-   // need to call find key method 
-   // find key returns int 
-  //public boolean hasKey(K key) throws KeyNotFoundException{
-    //return ((pairs[find(key)]) == key);
-  //} // hasKey(K)
-
-// think hasKey is broken somehow 
-   public boolean hasKey(K key) {
+  public boolean hasKey(K key) {
     try {
-      if ((pairs[find(key)]).equals(key)){
+      // returns true if index at find(key) is greater than or equal to 0
+      if (find(key) >= 0) {
         return true;
-      } // if
-  } // try
-  catch (KeyNotFoundException e){
-  } // catch  
-  return false;
-} // hasKey (key)
+      }
+    } catch (KeyNotFoundException e) {
+
+    } // catch
+    return false;
+  } // hasKey(K)
 
   /**
    * Remove the key/value pair associated with a key. Future calls
@@ -200,25 +177,29 @@ public class AssociativeArray<K, V> {
 
   public void remove(K key) {
     try {
-    // Initializes the shift to 0
-    int shift = 0;
-    // If the key exists, set the key equal to null
-      //for (int i = 0; i < this.size; i++) {
-        if (hasKey(key)) {
-        pairs[find(key)] = null;
-        // Sets the shift equal to the index which the key is located at
+      // Initializes the shift to 0
+      int shift = 0;
+      // If the key exists, set shift equal to the index at find key and set the index at find key to null
+      if (hasKey(key)) {
         shift = find(key);
+        pairs[find(key)] = null;
         // Shifts the associative array
         for (int j = shift + 1; j < this.size; j++) {
           pairs[j - 1] = pairs[j];
         } // for
-        // Decreases the size of the array
-        this.size--;
+        // If the size is greater than 0, decrease the size of the array
+        if (this.size > 0) {
+          this.size--;
+        } // if
+        // Otherwise set size equal to 0
+        else {
+          this.size = 0;
+        } // else
       } // if
-    } catch (KeyNotFoundException e){
-      
+    } catch (KeyNotFoundException e) {
+
     } // catch
-    }// remove(K)
+  }// remove(K)
 
   /**
    * Determine how many key/value pairs are in the associative array.
@@ -245,12 +226,11 @@ public class AssociativeArray<K, V> {
 
   public int find(K key) throws KeyNotFoundException {
     for (int i = 0; i < this.size; i++) {
+      // if key pair is equal to key, return the index
       if (pairs[i].key.equals(key)) {
         return i;
       } // if
     } // for
     throw new KeyNotFoundException();
-    //return -1;
-    //throw new KeyNotFoundException();  
   } // find(K)
 } // class AssociativeArray
