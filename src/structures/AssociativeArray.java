@@ -215,7 +215,7 @@ public class AssociativeArray<K, V> {
   /**
    * Expand the underlying array.
    */
-  public void expand() {
+  private void expand() {
     this.pairs = java.util.Arrays.copyOf(this.pairs, this.pairs.length * 2);
   } // expand()
 
@@ -224,7 +224,7 @@ public class AssociativeArray<K, V> {
    * If no such entry is found, throws an exception.
    */
 
-  public int find(K key) throws KeyNotFoundException {
+  private int find(K key) throws KeyNotFoundException {
     for (int i = 0; i < this.size; i++) {
       // if key pair is equal to key, return the index
       if (pairs[i].key.equals(key)) {
@@ -234,3 +234,4 @@ public class AssociativeArray<K, V> {
     throw new KeyNotFoundException();
   } // find(K)
 } // class AssociativeArray
+
